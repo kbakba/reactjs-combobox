@@ -13,6 +13,7 @@ html {
 
 body {
   margin: 10px;
+  background: rgb(253, 246, 234);
 }
 
 *, *:before, *:after {
@@ -115,12 +116,44 @@ body {
     width: 100%;
 
     margin: -2px 0 0 0;
-    padding: 6px 0;
+    padding: 0;
 
     border-style: solid;
     border-color: #e2e2e2;
     border-width: 0 1px 4px 2px;
     border-radius: 0 0  4px 4px;
+
+    background: #fff;
+
+    z-index: -10;
+
+}
+
+.Combobox__dropdownWrapper {
+    display: block;
+    position: relative;
+
+    width: 100%;
+    max-height: 200px;
+
+    overflow: scroll;
+
+    margin: 6px 0 3px 0;
+    padding: 0;
+
+}
+
+.Combobox__dropdownList {
+    display: block;
+    position: relative;
+
+    top: 0;
+    left: 0;
+
+    overflow: hidden;
+
+    margin: 0 0 0 0;
+    padding: 0;
 
     color: #999;
     font-size: 12px;
@@ -162,13 +195,24 @@ body {
     <body>
         <div class="Combobox">
             <input  type="text"   class="Combobox__input" value="test"/>
-            <ul class="Combobox__dropdown">
-                <li class="Combobox__dropdownItem">Action</li>
-                <li class="Combobox__dropdownItem Combobox__dropdownItem_selected">Another action</li>
-                <li class="Combobox__dropdownDivider"></li>
-                <li class="Combobox__dropdownItem">Something else here</li>
-                <li class="Combobox__dropdownItem">Separated link</li>
-            </ul>
+            <div class="Combobox__dropdown">
+            <div class="Combobox__dropdownWrapper">
+                <ul class="Combobox__dropdownList">
+                    <li class="Combobox__dropdownItem">Action</li>
+                    <li class="Combobox__dropdownItem Combobox__dropdownItem_selected">Another action</li>
+                    <li class="Combobox__dropdownDivider"></li>
+                    <li class="Combobox__dropdownItem">Something else here</li>
+                    <li class="Combobox__dropdownItem">Separated link</li>
+                    <li class="Combobox__dropdownItem">Something else here</li>
+                    <li class="Combobox__dropdownItem">Separated link</li>
+                    <li class="Combobox__dropdownItem">Something else here</li>
+                    <li class="Combobox__dropdownDivider"></li>
+                    <li class="Combobox__dropdownItem">Separated link</li>
+                    <li class="Combobox__dropdownItem">Something else here</li>
+                    <li class="Combobox__dropdownItem">Separated link</li>
+                </ul>
+            </div>
+            </div>
             <span class="Combobox__wrapper">
                 <button type="button" class="Combobox__button">B</button>
             </span>
