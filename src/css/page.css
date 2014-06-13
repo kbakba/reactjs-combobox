@@ -1,0 +1,14 @@
+html {
+  font-family: sans-serif;
+  -ms-text-size-adjust: 100%;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  margin: 10px;
+  background: rgb(253, 246, 234);
+}
+
+*, *:before, *:after {
+    box-sizing: border-box;
+}

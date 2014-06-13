@@ -1,0 +1,31 @@
+{
+  "name": "React Combo box",
+  "version": "0.0.0",
+  "authors": [
+    "Aleksey Ostapenko <kbakba@kbakba.net>"
+  ],
+  "description": "Combo box built as React.js component",
+  "main": "src/index.html",
+  "moduleType": [
+    "globals",
+    "node"
+  ],
+  "keywords": [
+    "combobox",
+    "react",
+    "react.js"
+  ],
+  "license": "MIT",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "react": "0.10"
+  }
+
+}

@@ -4,194 +4,8 @@
         <meta charset='utf-8'>
 	    <meta name='viewport' content='width=device-width, initial-scale=1, maximum-scale=1'>
 	    <title>reactjs combobox</title>
-        <style type="text/css" media="screen">
-html {
-  font-family: sans-serif;
-  -ms-text-size-adjust: 100%;
-  -webkit-text-size-adjust: 100%;
-}
-
-body {
-  margin: 10px;
-  background: rgb(253, 246, 234);
-}
-
-*, *:before, *:after {
-    box-sizing: border-box;
-}
-
-.Combobox {
-    display: table;
-    position: relative;
-
-    width: 250px;
-    min-width: 150px;
-    max-width: 500px;
-
-    border-collapse: separate;
-}
-
-.Combobox__input {
-    display: table-cell;
-    float: left;
-
-    width: 100%;
-    height: 40px;
-
-    margin: 0;
-    padding: 6px 12px;
-
-    border-style: solid;
-    border-color: #e2e2e2;
-    border-width: 4px 0px 1px 1px;
-    border-radius: 4px 0 0 4px;
-
-    color: #555555;
-    background-color: #ffffff;
-    background-image: none;
-
-    font-size: 13px;
-    font-weight: bold;
-    letter-spacing: 0.05ex;
-    line-height: 1.42857143;
-    outline: none;
-}
-
-.Combobox__button {
-    display: inline-block;
-
-    height: 40px;
-    width: 40px;
-
-    margin: 0;
-    padding: 8px 12px 7px;
-
-    border-style: solid;
-    border-color: #e2e2e2;
-    border-width: 1px 1px 4px 2px;
-    border-radius: 0 4px 4px 0;
-
-    color: #555;
-    background-color: #eee;
-    background-image: none;
-
-    font-size: 12px;
-    font-weight: bold;
-    text-transform: uppercase;
-    text-align: center;
-    white-space: nowrap;
-    line-height: 1.42857143;
-
-    vertical-align: middle;
-
-    outline: none;
-    cursor: pointer;
-    user-select: none;
-}
-
-.Combobox__button:hover {
-    background-color: #f7f7f7;
-}
-
-.Combobox__button:active {
-    border-width: 4px 2px 1px 1px;
-    box-shadow: none;
-}
-
-.Combobox__buttonWrapper {
-    display: table-cell;
-    position: relative;
-    width: 1%;
-
-    font-size: 0;
-    white-space: nowrap;
-    vertical-align: middle;
-}
-
-.Combobox__dropdown {
-    display: block;
-    position: absolute;
-
-    top: 100%;
-    left: 0;
-    width: 100%;
-
-    margin: -2px 0 0 0;
-    padding: 0;
-
-    border-style: solid;
-    border-color: #e2e2e2;
-    border-width: 0 1px 4px 2px;
-    border-radius: 0 0  4px 4px;
-
-    background: #fff;
-
-    z-index: -10;
-
-}
-
-.Combobox__dropdownWrapper {
-    display: block;
-    position: relative;
-
-    width: 100%;
-    max-height: 200px;
-
-    overflow: scroll;
-
-    margin: 6px 0 3px 0;
-    padding: 0;
-
-}
-
-.Combobox__dropdownList {
-    display: block;
-    position: relative;
-
-    top: 0;
-    left: 0;
-
-    overflow: hidden;
-
-    margin: 0 0 0 0;
-    padding: 0;
-
-    color: #999;
-    font-size: 12px;
-    letter-spacing: 0.05ex;
-    line-height: 1.42857143;
-}
-
-.Combobox__dropdownItem {
-    display: block;
-
-    margin: 0;
-    padding: 6px 12px;
-
-    cursor: pointer;
-    user-select: none;
-}
-
-.Combobox__dropdownItem:hover {
-    background-color: #f7f7f7;
-}
-
-.Combobox__dropdownItem_selected {
-    font-weight: bold;
-    color: #555;
-}
-
-.Combobox__dropdownDivider {
-    display: block;
-
-    margin: 6px 0;
-    padding: 0;
-
-    border: 0 solid #e2e2e2;
-    border-top-width: 1px;
-}
-
-        </style>
+        <link rel="stylesheet" type="text/css" href="css/page.css">
+        <link rel="stylesheet" type="text/css" href="css/Combobox.css">
     </head>
     <body>
         <div class="Combobox">
@@ -215,8 +29,14 @@ body {
             </div>
             </div>
             <span class="Combobox__buttonWrapper">
-                <button type="button" class="Combobox__button">B</button>
+                <button type="button" class="Combobox__button">▼</button>
             </span>
         </div>
+
+        <div id="insert_here"></div>
+
+        <script src="bower_components/react/react-with-addons.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/Combobox.js" type="text/javascript" charset="utf-8"></script>
+        <script src="js/main.js" type="text/javascript" charset="utf-8"></script>
     </body>
 </html>
