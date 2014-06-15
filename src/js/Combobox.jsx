@@ -83,7 +83,7 @@ NS.Combobox = (function (React) {
         render: function() {
             return (
                 <div className={BLOCK + ' ' + ((this.state.isOpen) ? clsState(BLOCK, 'open') : '')}>
-                    <input type="text" className={clsElem(BLOCK, 'input')} defaultValue="test"/>
+                    <input ref="textField" type="text" onFocus={this.open} className={clsElem(BLOCK, 'input')} defaultValue="test"/>
                     <div className={clsElem(BLOCK, 'dropdown')}>
                         <div className={clsElem(BLOCK, 'dropdownWrapper')}>
                             <ul className={clsElem(BLOCK, 'dropdownList')}>
@@ -92,7 +92,7 @@ NS.Combobox = (function (React) {
                         </div>
                     </div>
                     <span className={clsElem(BLOCK, 'buttonWrapper')}>
-                        <button type="button" onMouseDown={this.toggle} className={clsElem(BLOCK, 'button')}>▼</button>
+                        <button ref="button" type="button" onMouseDown={this.toggle} className={clsElem(BLOCK, 'button')}>▼</button>
                     </span>
                 </div>
             );
@@ -118,8 +118,7 @@ NS.Combobox = (function (React) {
          */
         toggle: function () {
             this.setState({isOpen: !this.state.isOpen});
-        },
-
+        }
     });
 
 
