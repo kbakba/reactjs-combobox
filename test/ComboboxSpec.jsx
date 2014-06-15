@@ -5,19 +5,20 @@
 
 "use strict";
 
-var Combobox = NS.Combobox.Combobox;
-var ComboboxOption = NS.Combobox.ComboboxOption;
+var Combobox = NS.Combobox;
 var ReactTestUtils = React.addons.TestUtils;
 
 describe("Combobox",function(){
     var cbox;
 
     beforeEach(function() {
+
+        var data = [
+            { label: "First Item", value: "1" },
+            { label: "Second Item", value: "2" },
+        ];
         var combobox_class = (
-                <Combobox>
-                    <ComboboxOption value="a1">Action</ComboboxOption>
-                    <ComboboxOption value="a2_sel" selected>Selected action</ComboboxOption>
-                </Combobox>
+                <Combobox data={data}/>
         );
         cbox = ReactTestUtils.renderIntoDocument(combobox_class);
     });
@@ -39,5 +40,21 @@ describe("Combobox",function(){
     it("is open on text field focus", function() {
         ReactTestUtils.Simulate.focus(cbox.refs.textField.getDOMNode());
         expect(cbox.state.isOpen).toBe(true);
+    });
+
+    it("has default value is empty string", function() {
+        expect(cbox.value()).toBe("");
+    });
+
+    it("has default value from attribute", function() {
+        var data = [
+            { label: "First Item", value: "1" },
+            { label: "Second Item", value: "2" },
+        ];
+        var combobox_class = (
+                <Combobox data={data} defaultValue="2"/>
+        );
+        var cbox = ReactTestUtils.renderIntoDocument(combobox_class);
+        expect(cbox.value()).toBe('2');
     });
 });

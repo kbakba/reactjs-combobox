@@ -1,4 +1,5 @@
 /** @jsx React.DOM */
+/* jshint newcap: false */
 /* global React */
 
 /**
@@ -39,27 +40,42 @@ NS.Combobox = (function(React) {
 
     var BLOCK = 'Combobox';
 
-    var ComboboxDivider = React.createClass({
-        render: function() {
-            return (
-                <li className={clsElem(BLOCK, 'dropdownDivider')}/>
-            );
-        }
-    });
-
+    /**
+     * Combo box option UI component
+     * @class
+     */
     var ComboboxOption = React.createClass({
+        // Default component methods
         propTypes: {
             selected: React.PropTypes.bool,
-            children: React.PropTypes.string
+            children: React.PropTypes.string.isRequired,
+            value: React.PropTypes.object,
+            onClick: React.PropTypes.func
         },
+
+        getDefaultProps: function(argument) {
+            return {
+                selected: false,
+                children: "",
+                value: null
+            };
+        },
+
         render: function() {
             var cls = {};
             cls[clsElem(BLOCK, 'dropdownItem')] = true;
             cls[clsState(clsElem(BLOCK, 'dropdownItem'), 'selected')] = this.props.selected;
 
             return (
-                <li className={cx(cls)}>{this.props.children}</li>
+                <li className={cx(cls)} onClick={this.onClick}>
+                    {this.props.children}
+                </li>
             );
+        },
+
+        onClick: function(evt) {
+            this.props.onClick(evt, this.props.label, this.props.value);
+            return false;
         }
     });
 
@@ -70,24 +86,43 @@ NS.Combobox = (function(React) {
     var Combobox = React.createClass({
         // Default component methods
         propTypes: {
-            children: React.PropTypes.arrayOf(ComboboxOption, ComboboxDivider)
+            defaultValue: React.PropTypes.string,
+            data: React.PropTypes.arrayOf(
+                    React.PropTypes.shape({ label: React.PropTypes.string.isRequired })
+                ).isRequired
+        },
+
+        getDefaultProps: function(argument) {
+            return {
+                defaultValue: "",
+                data: []
+            };
         },
 
         getInitialState: function() {
             return {
-                data: [],
-                isOpen: false
+                isOpen: false,
+                _filtratedData: this.props.data,
+                _textValue: this.props.defaultValue,
+                _selectedItem: null,
             };
         },
 
         render: function() {
             return (
                 <div className={BLOCK + ' ' + ((this.state.isOpen) ? clsState(BLOCK, 'open') : '')}>
-                    <input ref="textField" type="text" onFocus={this.open} className={clsElem(BLOCK, 'input')} defaultValue="test"/>
+                    <input
+                        ref="textField"
+                        type="text"
+                        className={clsElem(BLOCK, 'input')}
+                        value={this.state._textValue}
+                        onFocus={this.open}
+                        onChange={this._handleTextChange}
+                    />
                     <div className={clsElem(BLOCK, 'dropdown')}>
                         <div className={clsElem(BLOCK, 'dropdownWrapper')}>
                             <ul className={clsElem(BLOCK, 'dropdownList')}>
-                                {this.props.children}
+                                {this.state._filtratedData.map(this._dataToOption)}
                             </ul>
                         </div>
                     </div>
@@ -99,34 +134,108 @@ NS.Combobox = (function(React) {
         },
 
         // Custom component methods
+        // Private
         /**
-         * Open Comobo box dropdown
+         * Convert dataItem to <Option/>
+         * @param  {object} dataItem
+         * @param  {string} dataItem.label Label for option
+         * @return {<Option/>}
+         */
+        _dataToOption: function(dataItem) {
+            var label = dataItem.label;
+            var item = (
+                <ComboboxOption
+                    label={label}
+                    value={dataItem}
+                    key={'key-' + label.toLowerCase().replace(' ', '')}
+                    onClick={this._handleOptionClick}>
+                    {label}
+                </ComboboxOption>
+            );
+            return item;
+        },
+
+        /**
+         * Handle textField change
+         * @param  {event} evt
+         */
+        _handleTextChange: function(evt) {
+            var newValue = evt.target.value;
+            this.setState({_selectedItem: null});
+            this.setTextValue(newValue);
+            return false;
+        },
+
+        /**
+         * Handle <Option> click
+         * @param  {event} evt
+         */
+        _handleOptionClick: function(evt, label, data) {
+            this.setState({_selectedItem: data});
+            this.setTextValue(label, true);
+            return false;
+        },
+
+        // Public
+        /**
+         * Open Combo box dropdown
          */
         open: function() {
             this.setState({isOpen: true});
         },
 
         /**
-         * Close Comobo box dropdown
+         * Close Combo box dropdown
          */
         close: function() {
             this.setState({isOpen: false});
         },
 
         /**
-         * Toggle (Open or Close) Comobo box dropdown
+         * Toggle (Open or Close) Combo box dropdown
          */
         toggle: function() {
             this.setState({isOpen: !this.state.isOpen});
+        },
+
+        /**
+         * Set Combobox text value
+         * @param {string} newValue
+         * @param {bool} close    Close dropdown after set value
+         */
+        setTextValue: function(newValue, close) {
+            var val = newValue.toLowerCase().replace(' ', '');
+
+            // TODO: filterFunc must be a component property
+            var filterFunc = function(item){
+                return item.label.toLowerCase().replace(' ', '').indexOf(val) >= 0;
+            };
+
+            var filtratedData = this.props.data.filter(filterFunc);
+
+            if (filtratedData.length === 0) {
+                filtratedData = this.props.data;
+            }
+
+            this.setState({
+                _textValue: newValue,
+                _filtratedData: filtratedData
+            });
+
+            if (close) {
+                this.close();
+            }
+        },
+
+        /**
+         * Get value
+         * @return {string|Object} value
+         */
+        value: function() {
+            var result = this.state._selectedItem || this.state._textValue;
+            return result;
         }
     });
 
-
-    var exp = {
-        Combobox: Combobox,
-        ComboboxOption: ComboboxOption,
-        ComboboxDivider: ComboboxDivider
-    };
-
-return exp;
+    return Combobox;
 })(React);

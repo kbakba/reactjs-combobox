@@ -3,29 +3,19 @@
 /* global React, NS */
 
 (function(doc) {
-    var Combobox = NS.Combobox.Combobox;
-    var ComboboxOption = NS.Combobox.ComboboxOption;
-    var ComboboxDivider = NS.Combobox.ComboboxDivider;
+    var Combobox = NS.Combobox;
 
-    React.renderComponent(
-        <Combobox>
-            <ComboboxOption value="a1">Action</ComboboxOption>
-            <ComboboxOption value="a2_sel" selected>Selected action</ComboboxOption>
-            <ComboboxDivider/>
-            <ComboboxOption value="a3">Another action</ComboboxOption>
-            <ComboboxOption value="a4">Something else here</ComboboxOption>
-            <ComboboxOption value="a1">Action</ComboboxOption>
-            <ComboboxOption value="a2_sel" selected>Selected action</ComboboxOption>
-            <ComboboxDivider/>
-            <ComboboxOption value="a3">Another action</ComboboxOption>
-            <ComboboxOption value="a4">Something else here</ComboboxOption>
-            <ComboboxOption value="a1">Action</ComboboxOption>
-            <ComboboxOption value="a2_sel" selected>Selected action</ComboboxOption>
-            <ComboboxDivider/>
-            <ComboboxOption value="a3">Another action</ComboboxOption>
-            <ComboboxOption value="a4">Something else here</ComboboxOption>
-        </Combobox>,
+    var data = [
+        { label: "Point",    value: "0" },
+        { label: "Triangle", value: "3" },
+        { label: "Square", value: "4" },
+        { label: "Star",   value: "5" },
+        { label: "Super Star",   value: "Michael Jackson" }
+    ];
 
+    window.comboboxInstance = React.renderComponent(
+        (<Combobox data={data}/>),
         doc.getElementById('insert_here')
     );
+
 })(document);
