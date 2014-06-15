@@ -9,7 +9,7 @@ var NS = NS || {};
 /**
  * @module Combobox
  */
-NS.Combobox = (function (React) {
+NS.Combobox = (function(React) {
 
     var cx = React.addons.classSet;
 
@@ -19,7 +19,7 @@ NS.Combobox = (function (React) {
      * @param  {string} elemName  Element name
      * @return {string}           CSS class for Element
      */
-    var clsElem = function (blockName, elemName) {
+    var clsElem = function(blockName, elemName) {
         var className = blockName + '__' + elemName;
         return className;
     };
@@ -31,7 +31,7 @@ NS.Combobox = (function (React) {
      * @param  {string} [stateValue]
      * @return {string}             CSS class for Block or Element with state
      */
-    var clsState = function (blockName, stateName, stateValue) {
+    var clsState = function(blockName, stateName, stateValue) {
         var className = blockName + '_' + stateName +
                         ((stateValue == null) ? '' : '-' +  stateValue);
         return className;
@@ -116,7 +116,7 @@ NS.Combobox = (function (React) {
         /**
          * Toggle (Open or Close) Comobo box dropdown
          */
-        toggle: function () {
+        toggle: function() {
             this.setState({isOpen: !this.state.isOpen});
         }
     });

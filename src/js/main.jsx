@@ -2,7 +2,7 @@
 /* jshint newcap: false */
 /* global React, NS */
 
-(function (doc) {
+(function(doc) {
     var Combobox = NS.Combobox.Combobox;
     var ComboboxOption = NS.Combobox.ComboboxOption;
     var ComboboxDivider = NS.Combobox.ComboboxDivider;
