@@ -21,7 +21,8 @@ module.exports = function(grunt) {
             },
             dev: {
                 files: {
-                    jsx: '.dev/js/**/*.js'
+                    jsx: '.dev/js/**/*.js',
+                    test: '.dev/test/**/*.js'
                 }
             },
             options: {
@@ -42,8 +43,14 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src/',
-                    src: ['js/**/*.jsx'],
+                    src: ['js/**/*.jsx', 'test/**/*Spec.jsx'],
                     dest: '.dev/',
+                    ext: '.js'
+                }, {
+                    expand: true,
+                    cwd: 'test/',
+                    src: ['**/*Spec.jsx', '**/*Spec.js'],
+                    dest: '.dev/test/',
                     ext: '.js'
                 }]
             },
@@ -56,6 +63,34 @@ module.exports = function(grunt) {
                     ext: '.js'
                 }]
             }
+        },
+
+        karma: {
+            options: {
+                configFile: 'test/karma.conf.js',
+                frameworks: ['jasmine'],
+                basePath: '../.dev',
+                files: [
+                        'bower_components/react/react-with-addons.js',
+                        'js/Combobox.js',
+                        'test/*Spec.js'
+                ],
+                browsers: [],
+            },
+            run: {
+                reporters: ['progress'],
+                background: false,
+                autoWatch: false,
+                browsers: ['Chrome'],
+                singleRun: true
+            },
+            dev: {
+                reporters: ['progress'],
+                browsers: ['Chrome'],
+                // autoWatch: true,
+                // singleRun: false,
+                background: true
+            },
         },
 
         copy: {
@@ -99,18 +134,18 @@ module.exports = function(grunt) {
                 interrupt: true
             },
             jsx: {
-                files: ['src/js/**/*.jsx'],
+                files: ['src/js/**/*.jsx', 'test/**/*Spec.jsx'],
                 tasks: ['react:dev', 'jshint'],
                 interrupt: true
             },
             jsxcheck: {
-                files: ['.dev/js/**/*.js'],
-                tasks: ['jshint'],
+                files: ['.dev/js/**/*.js', '.dev/test/**/*.js'],
+                tasks: ['jshint', 'karma:dev:run'],
                 interrupt: true,
                 livereload: false
             },
             js: {
-                files: ['src/js/**/*.js'],
+                files: ['src/js/**/*.js', 'test/**/*.js'],
                 tasks: ['jshint'],
                 interrupt: true
             },
@@ -141,8 +176,11 @@ module.exports = function(grunt) {
     grunt.registerTask('default', [
         'dev',
         'connect',
+        'karma:dev',
         'watch'
     ]);
+
+    grunt.registerTask('test', ['dev', 'karma']);
 
     grunt.registerTask('dist', [
         'bower-install-simple',
