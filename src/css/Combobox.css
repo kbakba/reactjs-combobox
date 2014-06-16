@@ -159,6 +159,7 @@
 .Combobox__dropdownItem_selected {
     font-weight: bold;
     color: #555;
+    background-color: #f7f7f7;
 }
 
 .Combobox .Combobox__dropdown {
