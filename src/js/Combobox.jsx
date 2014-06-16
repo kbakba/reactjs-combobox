@@ -185,28 +185,32 @@ NS.Combobox = (function(React) {
          */
         _handleOptionClick: function(evt, label, dataItem) {
             this.setState({_selectedOptionData: dataItem});
-            this.setTextValue(label, true);
+            this.setTextValue(label);
+            this.close();
             return false;
         },
 
         /**
          * Handle textField keyDown
          * @param  {event} evt
-         * @return {bool} false if is ArrowDown/ArrowUp/Enter keys
+         * @return {bool} false if is ArrowDown/ArrowUp/Enter/Escape keys
          */
         _handleKeyDown: function(evt) {
             var result = true;
             if (evt.key === 'ArrowDown') {
-                this.moveOptionSelection(1);
+                this._moveOptionSelection(1);
                 result = false;
             } else if (evt.key === 'ArrowUp') {
-                this.moveOptionSelection(-1);
+                this._moveOptionSelection(-1);
                 result = false;
             } else if (evt.key === 'Enter') {
                 var dataItem = this.state._filtratedData[this.state._selectedIndex];
                 if (dataItem) {
                     this._handleOptionClick(null, dataItem['label'], dataItem);
                 }
+                this.refs.textField.getDOMNode().blur();
+                result = false;
+            } else if (evt.key === 'Escape') {
                 this.refs.textField.getDOMNode().blur();
                 result = false;
             }
@@ -229,6 +233,8 @@ NS.Combobox = (function(React) {
          * @param  {event} evt
          */
         _focus: function(evt) {
+            var len = this.state._textValue.length;
+            this.refs.textField.getDOMNode().setSelectionRange(len, len);
             this.open();
             return false;
         },
@@ -247,23 +253,32 @@ NS.Combobox = (function(React) {
          * move option selection
          * @param  {number} direction of selction move (positive - move down, negative - move up)
          */
-        moveOptionSelection: function(direction) {
+        _moveOptionSelection: function(direction) {
             var _selectedIndex = this.state._selectedIndex + direction;
-            if (_selectedIndex < 0 ) {
-                _selectedIndex = 0;
-            } else if (_selectedIndex >= this.state._filtratedData.length) {
+            if (_selectedIndex < 0) {
                 _selectedIndex = this.state._filtratedData.length - 1;
+            } else if (_selectedIndex >= this.state._filtratedData.length) {
+                _selectedIndex = 0;
             }
-            this.setState({_selectedIndex: _selectedIndex});
+            this.setState({_selectedIndex: _selectedIndex}, this._scrollToSelected);
+        },
+
+        /**
+         * Scroll dropdown to selected element
+         */
+        _scrollToSelected: function() {
+            var cls = clsState(clsElem(BLOCK, 'dropdownOption'), 'selected');
+            this.getDOMNode().getElementsByClassName(cls)[0].scrollIntoView(false);
         },
 
         // Public
         /**
-         * Open Combo box dropdown
+         * Open Combo box dropdown list is not empty
          */
         open: function() {
+            var isOpen = this.state._filtratedData.length > 0;
             this.setState({
-                isOpen: true,
+                isOpen: isOpen,
                 _selectedIndex: -1
             });
         },
@@ -281,37 +296,36 @@ NS.Combobox = (function(React) {
          * Toggle (Open or Close) Combo box dropdown
          */
         toggle: function() {
-            this.setState({isOpen: !this.state.isOpen});
+            if (this.state.isOpen) {
+                this.open();
+            } else {
+                this.close();
+            }
         },
 
         /**
          * Set Combobox text value
          * @param {string} newValue
-         * @param {bool} close    Close dropdown after set value
          */
-        setTextValue: function(newValue, close) {
+        setTextValue: function(newValue) {
             var val = newValue.toLowerCase().replace(' ', '');
 
             // TODO: filterFunc must be a component property
             var filterFunc = function(item){
                 return item.label.toLowerCase().replace(' ', '').indexOf(val) >= 0;
             };
-
             var filtratedData = this.props.data.filter(filterFunc);
 
             this.setState({
                 _textValue: newValue,
-                _filtratedData: filtratedData
+                _filtratedData: filtratedData,
+                isOpen: filtratedData.length > 0
             });
-
-            if (close) {
-                this.close();
-            }
         },
 
         /**
          * Get value
-         * @return {string|Object} value
+         * @return {string|object} value
          */
         value: function() {
             var result = this.state._selectedOptionData || this.state._textValue;
