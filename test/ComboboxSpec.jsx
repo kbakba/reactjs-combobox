@@ -32,10 +32,10 @@ describe("Combobox",function(){
         expect(cbox.state.isOpen).toBe(false);
     });
 
-    it("is open on click", function() {
-        ReactTestUtils.Simulate.mouseDown(cbox.refs.button.getDOMNode());
-        expect(cbox.state.isOpen).toBe(true);
-    });
+    // it("text is focused on button click", function() {
+    //     ReactTestUtils.Simulate.click(cbox.refs.button.getDOMNode());
+    //     expect(document.activeElement).toBe(cbox.refs.textField.getDOMNode());
+    // });
 
     it("is open on text field focus", function() {
         ReactTestUtils.Simulate.focus(cbox.refs.textField.getDOMNode());

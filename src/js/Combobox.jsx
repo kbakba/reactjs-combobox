@@ -104,20 +104,23 @@ NS.Combobox = (function(React) {
                 isOpen: false,
                 _filtratedData: this.props.data,
                 _textValue: this.props.defaultValue,
-                _selectedItem: null,
+                _selectedOptionData: null,
+                _selectedIndex: -1
             };
         },
 
         render: function() {
             return (
-                <div className={BLOCK + ' ' + ((this.state.isOpen) ? clsState(BLOCK, 'open') : '')}>
+                <div className={BLOCK + ' ' + ((this.state.isOpen) ? clsState(BLOCK, 'open') : '')}
+                    onKeyDown={this._handleKeyDown}>
                     <input
                         ref="textField"
                         type="text"
                         className={clsElem(BLOCK, 'input')}
                         value={this.state._textValue}
-                        onFocus={this.open}
                         onChange={this._handleTextChange}
+                        onFocus={this._focus}
+                        onBlur={this._blur}
                     />
                     <div className={clsElem(BLOCK, 'dropdown')}>
                         <div className={clsElem(BLOCK, 'dropdownWrapper')}>
@@ -127,7 +130,7 @@ NS.Combobox = (function(React) {
                         </div>
                     </div>
                     <span className={clsElem(BLOCK, 'buttonWrapper')}>
-                        <button ref="button" type="button" onMouseDown={this.toggle} className={clsElem(BLOCK, 'button')}>▼</button>
+                        <button ref="button" type="button" onClick={this._handleButtonClick} className={clsElem(BLOCK, 'button')}>▼</button>
                     </span>
                 </div>
             );
@@ -139,12 +142,15 @@ NS.Combobox = (function(React) {
          * Convert dataItem to <Option/>
          * @param  {object} dataItem
          * @param  {string} dataItem.label Label for option
+         * @param  {number} idx index of element
          * @return {<Option/>}
          */
-        _dataToOption: function(dataItem) {
+        _dataToOption: function(dataItem, idx) {
             var label = dataItem.label;
+            var selected = (idx === this.state._selectedIndex);
             var item = (
                 <ComboboxOption
+                    selected={selected}
                     label={label}
                     value={dataItem}
                     key={'key-' + label.toLowerCase().replace(' ', '')}
@@ -158,10 +164,14 @@ NS.Combobox = (function(React) {
         /**
          * Handle textField change
          * @param  {event} evt
+         * @return false
          */
         _handleTextChange: function(evt) {
             var newValue = evt.target.value;
-            this.setState({_selectedItem: null});
+            this.setState({
+                _selectedOptionData: null,
+                _selectedIndex: -1
+            });
             this.setTextValue(newValue);
             return false;
         },
@@ -169,11 +179,82 @@ NS.Combobox = (function(React) {
         /**
          * Handle <Option> click
          * @param  {event} evt
+         * @param  {string} label <Option/> label
+         * @param  {object} dataItem <Option/> dataItem
+         * @return false
          */
-        _handleOptionClick: function(evt, label, data) {
-            this.setState({_selectedItem: data});
+        _handleOptionClick: function(evt, label, dataItem) {
+            this.setState({_selectedOptionData: dataItem});
             this.setTextValue(label, true);
             return false;
+        },
+
+        /**
+         * Handle textField keyDown
+         * @param  {event} evt
+         * @return {bool} false if is ArrowDown/ArrowUp/Enter keys
+         */
+        _handleKeyDown: function(evt) {
+            var result = true;
+            if (evt.key === 'ArrowDown') {
+                this.moveOptionSelection(1);
+                result = false;
+            } else if (evt.key === 'ArrowUp') {
+                this.moveOptionSelection(-1);
+                result = false;
+            } else if (evt.key === 'Enter') {
+                var dataItem = this.state._filtratedData[this.state._selectedIndex];
+                if (dataItem) {
+                    this._handleOptionClick(null, dataItem['label'], dataItem);
+                }
+                this.refs.textField.getDOMNode().blur();
+                result = false;
+            }
+            return result;
+        },
+
+        /**
+         * Handle button click
+         * @param  {event} evt
+         */
+        _handleButtonClick: function(evt) {
+            if (!this.state.isOpen) {
+                this.refs.textField.getDOMNode().focus();
+            }
+            return false;
+        },
+
+        /**
+         * Handle textField focus
+         * @param  {event} evt
+         */
+        _focus: function(evt) {
+            this.open();
+            return false;
+        },
+
+        /**
+         * Handle textField blur
+         * @param  {event} evt
+         */
+        _blur: function(evt) {
+            // HINT if this.close() fires before this._handleOptionClick() nothing happens :(
+            setTimeout(this.close, 100);
+            return false;
+        },
+
+        /**
+         * move option selection
+         * @param  {number} direction of selction move (positive - move down, negative - move up)
+         */
+        moveOptionSelection: function(direction) {
+            var _selectedIndex = this.state._selectedIndex + direction;
+            if (_selectedIndex < 0 ) {
+                _selectedIndex = 0;
+            } else if (_selectedIndex >= this.state._filtratedData.length) {
+                _selectedIndex = this.state._filtratedData.length - 1;
+            }
+            this.setState({_selectedIndex: _selectedIndex});
         },
 
         // Public
@@ -181,14 +262,19 @@ NS.Combobox = (function(React) {
          * Open Combo box dropdown
          */
         open: function() {
-            this.setState({isOpen: true});
+            this.setState({
+                isOpen: true,
+                _selectedIndex: -1
+            });
         },
 
         /**
          * Close Combo box dropdown
          */
         close: function() {
-            this.setState({isOpen: false});
+            this.setState({
+                isOpen: false
+            });
         },
 
         /**
@@ -213,10 +299,6 @@ NS.Combobox = (function(React) {
 
             var filtratedData = this.props.data.filter(filterFunc);
 
-            if (filtratedData.length === 0) {
-                filtratedData = this.props.data;
-            }
-
             this.setState({
                 _textValue: newValue,
                 _filtratedData: filtratedData
@@ -232,7 +314,7 @@ NS.Combobox = (function(React) {
          * @return {string|Object} value
          */
         value: function() {
-            var result = this.state._selectedItem || this.state._textValue;
+            var result = this.state._selectedOptionData || this.state._textValue;
             return result;
         }
     });
