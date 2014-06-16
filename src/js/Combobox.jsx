@@ -63,8 +63,8 @@ NS.Combobox = (function(React) {
 
         render: function() {
             var cls = {};
-            cls[clsElem(BLOCK, 'dropdownItem')] = true;
-            cls[clsState(clsElem(BLOCK, 'dropdownItem'), 'selected')] = this.props.selected;
+            cls[clsElem(BLOCK, 'dropdownOption')] = true;
+            cls[clsState(clsElem(BLOCK, 'dropdownOption'), 'selected')] = this.props.selected;
 
             return (
                 <li className={cx(cls)} onClick={this.onClick}>
