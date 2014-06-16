@@ -9,6 +9,11 @@
     margin: 6px 0;
 
     border-collapse: separate;
+
+    -webkit-user-select: none;
+       -moz-user-select: none;
+        -ms-user-select: none;
+            user-select: none;
 }
 
 .Combobox__input {
@@ -145,7 +150,6 @@
     padding: 6px 12px;
 
     cursor: pointer;
-    user-select: none;
 }
 
 .Combobox__dropdownItem:hover {
@@ -155,16 +159,6 @@
 .Combobox__dropdownItem_selected {
     font-weight: bold;
     color: #555;
-}
-
-.Combobox__dropdownDivider {
-    display: block;
-
-    margin: 6px 0;
-    padding: 0;
-
-    border: 0 solid #e2e2e2;
-    border-top-width: 1px;
 }
 
 .Combobox .Combobox__dropdown {
