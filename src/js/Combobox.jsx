@@ -100,9 +100,14 @@ NS.Combobox = (function(React) {
         },
 
         getInitialState: function() {
+            var _filtratedData = this.props.data;
+            if (this.props.defaultValue !== "") {
+                _filtratedData = this._getFiltratedData(this.props.defaultValue);
+            }
+
             return {
                 isOpen: false,
-                _filtratedData: this.props.data,
+                _filtratedData: _filtratedData,
                 _textValue: this.props.defaultValue,
                 _selectedOptionData: null,
                 _selectedIndex: -1
@@ -212,6 +217,7 @@ NS.Combobox = (function(React) {
                 result = false;
             } else if (evt.key === 'Escape') {
                 this.refs.textField.getDOMNode().blur();
+                this.close();
                 result = false;
             }
             return result;
@@ -233,9 +239,11 @@ NS.Combobox = (function(React) {
          * @param  {event} evt
          */
         _focus: function(evt) {
-            var len = this.state._textValue.length;
-            this.refs.textField.getDOMNode().setSelectionRange(len, len);
-            this.open();
+            var textField = evt.target;
+            var newValue = textField.value;
+            var len = newValue.length;
+            textField.setSelectionRange(len, len);
+            this.setTextValue(newValue);
             return false;
         },
 
@@ -254,13 +262,15 @@ NS.Combobox = (function(React) {
          * @param  {number} direction of selction move (positive - move down, negative - move up)
          */
         _moveOptionSelection: function(direction) {
-            var _selectedIndex = this.state._selectedIndex + direction;
-            if (_selectedIndex < 0) {
-                _selectedIndex = this.state._filtratedData.length - 1;
-            } else if (_selectedIndex >= this.state._filtratedData.length) {
-                _selectedIndex = 0;
+            if (this.state.isOpen) {
+                var _selectedIndex = this.state._selectedIndex + direction;
+                if (_selectedIndex < 0) {
+                    _selectedIndex = this.state._filtratedData.length - 1;
+                } else if (_selectedIndex >= this.state._filtratedData.length) {
+                    _selectedIndex = 0;
+                }
+                this.setState({_selectedIndex: _selectedIndex}, this._scrollToSelected);
             }
-            this.setState({_selectedIndex: _selectedIndex}, this._scrollToSelected);
         },
 
         /**
@@ -269,6 +279,23 @@ NS.Combobox = (function(React) {
         _scrollToSelected: function() {
             var cls = clsState(clsElem(BLOCK, 'dropdownOption'), 'selected');
             this.getDOMNode().getElementsByClassName(cls)[0].scrollIntoView(false);
+        },
+
+        /**
+         * Filter props.data by text
+         * @param  {string} txt
+         * @return {object[]}   filtrated data
+         */
+        _getFiltratedData: function(txt){
+            var val = txt.toLowerCase().replace(' ', '');
+
+            // TODO: filterFunc must be a component property
+            var filterFunc = function(item){
+                return item.label.toLowerCase().replace(' ', '').indexOf(val) >= 0;
+            };
+            var filtratedData = this.props.data.filter(filterFunc);
+
+            return filtratedData;
         },
 
         // Public
@@ -308,18 +335,12 @@ NS.Combobox = (function(React) {
          * @param {string} newValue
          */
         setTextValue: function(newValue) {
-            var val = newValue.toLowerCase().replace(' ', '');
-
-            // TODO: filterFunc must be a component property
-            var filterFunc = function(item){
-                return item.label.toLowerCase().replace(' ', '').indexOf(val) >= 0;
-            };
-            var filtratedData = this.props.data.filter(filterFunc);
+            var newData = this._getFiltratedData(newValue);
 
             this.setState({
                 _textValue: newValue,
-                _filtratedData: filtratedData,
-                isOpen: filtratedData.length > 0
+                _filtratedData: newData,
+                isOpen: newData.length > 0
             });
         },
 

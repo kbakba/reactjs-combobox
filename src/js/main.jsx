@@ -26,7 +26,7 @@
     ];
 
     window.comboboxInstance = React.renderComponent(
-        (<Combobox data={data}/>),
+        (<Combobox data={data} defaultValue="Point"/>),
         doc.getElementById('insert_here')
     );
 
