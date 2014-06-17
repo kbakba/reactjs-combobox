@@ -63,7 +63,7 @@ describe("Combobox",function(){
         expect(cbox.value()).toBe("First");
     });
 
-    it("has filtred dropdown on default value 'First'", function() {
+    it("has filtered dropdown items on default value 'First'", function() {
         var combobox_class = (
                 <Combobox data={data} defaultValue="First"/>
         );
@@ -71,7 +71,7 @@ describe("Combobox",function(){
         expect(cbox.state._filtratedData.length).toBe(1);
     });
 
-    it("has filtred dropdown on default value '10'", function() {
+    it("has filtered dropdown items on default value '10'", function() {
         var combobox_class = (
                 <Combobox data={data} defaultValue="10"/>
         );
@@ -180,9 +180,11 @@ describe("Combobox",function(){
         expect(cbox.value()).toBe("10");
     });
 
-    it("dropdown maus be closed if no items", function() {
+    it("dropdown must be closed if no items", function() {
         cbox.setTextValue("super");
         expect(cbox.state.isOpen).toBe(false);
     });
+
+    // TODO test /Combobox/@filterFunc
 
 });

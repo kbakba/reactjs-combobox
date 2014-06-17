@@ -29,8 +29,8 @@ NS.Combobox = (function(React) {
             var position = 0;
             var args = boundArgs.slice();
             while (position < arguments.length) {
-                args.push(arguments[position++])
-            };
+                args.push(arguments[position++]);
+            }
             return func.apply(this, args);
         };
     };
@@ -117,16 +117,21 @@ NS.Combobox = (function(React) {
     var Combobox = React.createClass({
         // Default component methods
         propTypes: {
-            defaultValue: React.PropTypes.string,
             data: React.PropTypes.arrayOf(
                     React.PropTypes.shape({ label: React.PropTypes.string.isRequired })
-                ).isRequired
+                ).isRequired,
+            defaultValue: React.PropTypes.string,
+            filterFunc: React.PropTypes.func
         },
 
         getDefaultProps: function(argument) {
             return {
+                data: [],
                 defaultValue: "",
-                data: []
+                filterFunc: function(textValue, item){
+                    var s = textValue.toLowerCase().replace(' ', '');
+                    return item.label.toLowerCase().replace(' ', '').indexOf(s) >= 0;
+                }
             };
         },
 
@@ -321,12 +326,7 @@ NS.Combobox = (function(React) {
          * @return {object[]}   filtrated data
          */
         _getFiltratedData: function(txt){
-            var val = txt.toLowerCase().replace(' ', '');
-
-            // TODO: filterFunc must be a component property
-            var filterFunc = function(item){
-                return item.label.toLowerCase().replace(' ', '').indexOf(val) >= 0;
-            };
+            var filterFunc = _partial(this.props.filterFunc, txt);
             var filtratedData = this.props.data.filter(filterFunc);
 
             return filtratedData;
