@@ -15,15 +15,42 @@ NS.Combobox = (function(React) {
     var cx = React.addons.classSet;
 
     /**
+     * @const CSS Component prefix
+     */
+    var CSS_PREFIX = 'Combobox';
+
+    /**
+     * Partial
+     * @see http://underscorejs.org/#partial
+     */
+    var _partial = function(func) {
+        var boundArgs = Array.prototype.slice.call(arguments, 1);
+        return function() {
+            var position = 0;
+            var args = boundArgs.slice();
+            while (position < arguments.length) {
+                args.push(arguments[position++])
+            };
+            return func.apply(this, args);
+        };
+    };
+
+    /**
      * Generate CSS class for Element
      * @param  {string} blockName
      * @param  {string} elemName  Element name
      * @return {string}           CSS class for Element
      */
-    var clsElem = function(blockName, elemName) {
+    var _clsElem = function(blockName, elemName) {
         var className = blockName + '__' + elemName;
         return className;
     };
+
+    /**
+     * It is _clsState() with predefined blockName=CSS_PREFIX
+     * @see _clsElem
+     */
+    var clsElem = _partial(_clsElem, CSS_PREFIX);
 
     /**
      * Generate CSS class for Block or Element state (modificator)
@@ -38,7 +65,11 @@ NS.Combobox = (function(React) {
         return className;
     };
 
-    var BLOCK = 'Combobox';
+    /**
+     * It is clsState() with predefined blockName=CSS_PREFIX
+     * @see clsState
+     */
+    var clsBlockState = _partial(clsState, CSS_PREFIX);
 
     /**
      * Combo box option UI component
@@ -63,8 +94,8 @@ NS.Combobox = (function(React) {
 
         render: function() {
             var cls = {};
-            cls[clsElem(BLOCK, 'dropdownOption')] = true;
-            cls[clsState(clsElem(BLOCK, 'dropdownOption'), 'selected')] = this.props.selected;
+            cls[clsElem('dropdownOption')] = true;
+            cls[clsState(clsElem('dropdownOption'), 'selected')] = this.props.selected;
 
             return (
                 <li className={cx(cls)} onClick={this.onClick}>
@@ -115,27 +146,30 @@ NS.Combobox = (function(React) {
         },
 
         render: function() {
+            var cls = {};
+            cls[CSS_PREFIX] = true;
+            cls[clsBlockState('open')] = this.state.isOpen;
+
             return (
-                <div className={BLOCK + ' ' + ((this.state.isOpen) ? clsState(BLOCK, 'open') : '')}
-                    onKeyDown={this._handleKeyDown}>
+                <div className={cx(cls)} onKeyDown={this._handleKeyDown}>
                     <input
                         ref="textField"
                         type="text"
-                        className={clsElem(BLOCK, 'input')}
+                        className={clsElem('input')}
                         value={this.state._textValue}
                         onChange={this._handleTextChange}
                         onFocus={this._focus}
                         onBlur={this._blur}
                     />
-                    <div className={clsElem(BLOCK, 'dropdown')}>
-                        <div className={clsElem(BLOCK, 'dropdownWrapper')}>
-                            <ul className={clsElem(BLOCK, 'dropdownList')}>
+                    <div className={clsElem('dropdown')}>
+                        <div className={clsElem('dropdownWrapper')}>
+                            <ul className={clsElem('dropdownList')}>
                                 {this.state._filtratedData.map(this._dataToOption)}
                             </ul>
                         </div>
                     </div>
-                    <span className={clsElem(BLOCK, 'buttonWrapper')}>
-                        <button ref="button" type="button" onClick={this._handleButtonClick} className={clsElem(BLOCK, 'button')}>▼</button>
+                    <span className={clsElem('buttonWrapper')}>
+                        <button ref="button" type="button" onClick={this._handleButtonClick} className={clsElem('button')}>▼</button>
                     </span>
                 </div>
             );
@@ -277,7 +311,7 @@ NS.Combobox = (function(React) {
          * Scroll dropdown to selected element
          */
         _scrollToSelected: function() {
-            var cls = clsState(clsElem(BLOCK, 'dropdownOption'), 'selected');
+            var cls = clsState(clsElem('dropdownOption'), 'selected');
             this.getDOMNode().getElementsByClassName(cls)[0].scrollIntoView(false);
         },
 
