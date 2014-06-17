@@ -43,12 +43,12 @@ describe("Combobox",function(){
     });
 
     it("is closed after init", function() {
-        expect(cbox.state.isOpen).toBe(false);
+        expect(cbox.isClosed()).toBe(true);
     });
 
     it("is open on text field focus", function() {
         Simulate.focus(cbox.refs.textField.getDOMNode());
-        expect(cbox.state.isOpen).toBe(true);
+        expect(cbox.isClosed()).toBe(false);
     });
 
     it("has default value is empty string", function() {
@@ -150,20 +150,20 @@ describe("Combobox",function(){
         textField.value = "1";
         Simulate.focus(textField);
         Simulate.keyDown(textField, {key: "Escape"});
-        expect(cbox.state.isOpen).toBe(false);
+        expect(cbox.isClosed()).toBe(true);
     });
 
     it("must open dropdown on .open()", function() {
         cbox.open();
-        expect(cbox.state.isOpen).toBe(true);
-        expect(cbox.getDOMNode().className.split(/\s+/)).toContain('Combobox_open');
+        expect(cbox.isClosed()).toBe(false);
+        expect(cbox.getDOMNode().className.split(/\s+/)).not.toContain('Combobox_closed');
     });
 
     it("must close dropdown on .close()", function() {
         cbox.open();
         cbox.close();
-        expect(cbox.state.isOpen).toBe(false);
-        expect(cbox.getDOMNode().className.split(/\s+/)).not.toContain('Combobox_open');
+        expect(cbox.isClosed()).toBe(true);
+        expect(cbox.getDOMNode().className.split(/\s+/)).toContain('Combobox_closed');
     });
 
     it("must filter items on input", function() {
@@ -176,13 +176,26 @@ describe("Combobox",function(){
 
     it("must change value on .setTextValue()", function() {
         cbox.setTextValue("10");
-        expect(cbox.state.isOpen).toBe(true);
+        expect(cbox.isClosed()).toBe(false);
         expect(cbox.value()).toBe("10");
     });
 
     it("dropdown must be closed if no items", function() {
         cbox.setTextValue("super");
-        expect(cbox.state.isOpen).toBe(false);
+        expect(cbox.isClosed()).toBe(true);
+    });
+
+    it("dropdown must be closed if Combobox disabled", function() {
+        cbox.disable();
+        expect(cbox.getDOMNode().className.split(/\s+/)).toContain('Combobox_disabled');
+        expect(cbox.isDisabled()).toBe(true);
+        expect(cbox.isClosed()).toBe(true);
+    });
+
+    it("dropdown must be closed if text changed", function() {
+        cbox.disable();
+        cbox.setTextValue("1");
+        expect(cbox.isClosed()).toBe(false);
     });
 
     // TODO test /Combobox/@filterFunc

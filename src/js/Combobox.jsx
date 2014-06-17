@@ -121,13 +121,15 @@ NS.Combobox = (function(React) {
                     React.PropTypes.shape({ label: React.PropTypes.string.isRequired })
                 ).isRequired,
             defaultValue: React.PropTypes.string,
-            filterFunc: React.PropTypes.func
+            filterFunc: React.PropTypes.func,
+            disabled: React.PropTypes.bool
         },
 
         getDefaultProps: function(argument) {
             return {
                 data: [],
                 defaultValue: "",
+                disabled: false,
                 filterFunc: function(textValue, item){
                     var s = textValue.toLowerCase().replace(' ', '');
                     return item.label.toLowerCase().replace(' ', '').indexOf(s) >= 0;
@@ -143,6 +145,7 @@ NS.Combobox = (function(React) {
 
             return {
                 isOpen: false,
+                isEnabled: !this.props.disabled,
                 _filtratedData: _filtratedData,
                 _textValue: this.props.defaultValue,
                 _selectedOptionData: null,
@@ -153,19 +156,12 @@ NS.Combobox = (function(React) {
         render: function() {
             var cls = {};
             cls[CSS_PREFIX] = true;
-            cls[clsBlockState('open')] = this.state.isOpen;
+            cls[clsBlockState('closed')] = !this.state.isOpen;
+            cls[clsBlockState('disabled')] = !this.state.isEnabled;
 
-            return (
-                <div className={cx(cls)} onKeyDown={this._handleKeyDown}>
-                    <input
-                        ref="textField"
-                        type="text"
-                        className={clsElem('input')}
-                        value={this.state._textValue}
-                        onChange={this._handleTextChange}
-                        onFocus={this._focus}
-                        onBlur={this._blur}
-                    />
+            var dropdown = "";
+            if (this.state.isEnabled) {
+                dropdown = (
                     <div className={clsElem('dropdown')}>
                         <div className={clsElem('dropdownWrapper')}>
                             <ul className={clsElem('dropdownList')}>
@@ -173,8 +169,28 @@ NS.Combobox = (function(React) {
                             </ul>
                         </div>
                     </div>
+                );
+            }
+            return (
+                <div className={cx(cls)} onKeyDown={this._handleKeyDown}>
+                    <input
+                        ref="textField"
+                        type="text"
+                        disabled={!this.state.isEnabled}
+                        className={clsElem('input')}
+                        value={this.state._textValue}
+                        onChange={this._handleTextChange}
+                        onFocus={this._focus}
+                        onBlur={this._blur}
+                    />
+                    {dropdown}
                     <span className={clsElem('buttonWrapper')}>
-                        <button ref="button" type="button" onClick={this._handleButtonClick} className={clsElem('button')}>▼</button>
+                        <button
+                            ref="button"
+                            type="button"
+                            onClick={this._handleButtonClick}
+                            className={clsElem('button')}
+                            disabled={!this.state.isEnabled}>▼</button>
                     </span>
                 </div>
             );
@@ -354,14 +370,38 @@ NS.Combobox = (function(React) {
         },
 
         /**
-         * Toggle (Open or Close) Combo box dropdown
+         * Dropdown is closed
+         * @return {Boolean}
          */
-        toggle: function() {
-            if (this.state.isOpen) {
-                this.open();
-            } else {
-                this.close();
-            }
+        isClosed: function() {
+            return !this.state.isOpen;
+        },
+
+        /**
+         * Enable Combo box
+         */
+        enable: function() {
+            this.setState({
+                isEnabled: true
+            });
+        },
+
+        /**
+         * Disable Combo box
+         */
+        disable: function() {
+            this.setState({
+                isEnabled: false,
+                isOpen: false
+            });
+        },
+
+        /**
+         * Combobox is disabled
+         * @return {Boolean}
+         */
+        isDisabled: function() {
+            return !this.state.isEnabled;
         },
 
         /**

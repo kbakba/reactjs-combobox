@@ -42,6 +42,7 @@
     outline: none;
 }
 
+/* Button */
 .Combobox__button {
     display: inline-block;
 
@@ -80,7 +81,6 @@
 
 .Combobox__button:active {
     border-width: 4px 2px 1px 1px;
-    box-shadow: none;
 }
 
 .Combobox__buttonWrapper {
@@ -93,6 +93,7 @@
     vertical-align: middle;
 }
 
+/* Dropdown */
 .Combobox__dropdown {
     display: block;
     position: absolute;
@@ -162,11 +163,38 @@
     background-color: #f7f7f7;
 }
 
+/* Open / Close */
 .Combobox .Combobox__dropdown {
-    display: none;
-}
-
-.Combobox_open .Combobox__dropdown {
     display: block;
 }
 
+.Combobox_closed .Combobox__dropdown {
+    display: none;
+}
+
+/* Enabled / Disabled */
+.Combobox_disabled {
+    cursor: not-allowed;
+}
+
+.Combobox_disabled .Combobox__dropdown {
+    display: none;
+}
+
+.Combobox_disabled .Combobox__input {
+    color: #888;
+    background-color: #f8f8f8;
+
+    cursor: not-allowed;
+}
+
+.Combobox_disabled .Combobox__button,
+.Combobox_disabled .Combobox__button:hover,
+.Combobox_disabled .Combobox__button:active {
+    border-width: 1px 1px 4px 2px;
+
+    color: #888;
+    background-color: #eee;
+
+    cursor: not-allowed;
+}
