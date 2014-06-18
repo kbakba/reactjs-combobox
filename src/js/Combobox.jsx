@@ -117,11 +117,15 @@ NS.Combobox = (function(React) {
     var Combobox = React.createClass({
         // Default component methods
         propTypes: {
+            // Default data items
             data: React.PropTypes.arrayOf(
                     React.PropTypes.shape({ label: React.PropTypes.string.isRequired })
                 ).isRequired,
+            // Default text value
             defaultValue: React.PropTypes.string,
+            // Function that filter items in data, use value from text field
             filterFunc: React.PropTypes.func,
+            // Combobox id disabled
             disabled: React.PropTypes.bool
         },
 
@@ -139,13 +143,14 @@ NS.Combobox = (function(React) {
 
         getInitialState: function() {
             var _filtratedData = this.props.data;
-            if (this.props.defaultValue !== "") {
-                _filtratedData = this._getFiltratedData(this.props.defaultValue);
+            if (this.props.defaultValue !== '') {
+                _filtratedData = this._getFiltratedData(this.props.defaultValue, this.props.data);
             }
 
             return {
                 isOpen: false,
                 isEnabled: !this.props.disabled,
+                _data: this.props.data,
                 _filtratedData: _filtratedData,
                 _textValue: this.props.defaultValue,
                 _selectedOptionData: null,
@@ -229,8 +234,8 @@ NS.Combobox = (function(React) {
         _handleTextChange: function(evt) {
             var newValue = evt.target.value;
             this.setState({
-                _selectedOptionData: null,
-                _selectedIndex: -1
+                _selectedIndex: -1,
+                _selectedOptionData: null
             });
             this.setTextValue(newValue);
             return false;
@@ -337,13 +342,21 @@ NS.Combobox = (function(React) {
         },
 
         /**
-         * Filter props.data by text
-         * @param  {string} txt
+         * Filter state._data by text
+         * @param  {string=this.state._textValue} txt
+         * @param  {string=this.state._data} data
          * @return {object[]}   filtrated data
          */
-        _getFiltratedData: function(txt){
+        _getFiltratedData: function(txt, data){
+            if (txt == null) {
+                txt = this.state._textValue;
+            }
+            if (data == null) {
+                data = this.state._data;
+            }
+
             var filterFunc = _partial(this.props.filterFunc, txt);
-            var filtratedData = this.props.data.filter(filterFunc);
+            var filtratedData = data.filter(filterFunc);
 
             return filtratedData;
         },
@@ -415,6 +428,21 @@ NS.Combobox = (function(React) {
                 _textValue: newValue,
                 _filtratedData: newData,
                 isOpen: newData.length > 0
+            });
+        },
+
+        /**
+         * Set data items
+         * @param {object[]} array of dataItems for <Option/>
+         */
+        setData: function(data) {
+            var newFiltratedData = this._getFiltratedData(this.state._textValue, data);
+
+            this.setState({
+                _filtratedData: newFiltratedData,
+                _data: data,
+                _selectedIndex: -1,
+                _selectedOptionData: null
             });
         },
 

@@ -30,6 +30,12 @@ describe("Combobox",function(){
         { label: "more Items", value: "100" }
     ];
 
+    var newData = [
+        { label: "Lock", value: "1" },
+        { label: "Stock ", value: "2" },
+        { label: "Two Smoking Barrels", value: "3" },
+    ];
+
     beforeEach(function() {
         var combobox_class = (
                 <Combobox data={data}/>
@@ -196,6 +202,14 @@ describe("Combobox",function(){
         cbox.disable();
         cbox.setTextValue("1");
         expect(cbox.isClosed()).toBe(false);
+    });
+
+    it("accept new data items", function() {
+        var textField = cbox.refs.textField.getDOMNode();
+        cbox.setData(newData);
+        Simulate.focus(textField);
+        var allOptions = getAllOptions(cbox);
+        expect(allOptions.length).toBe(newData.length);
     });
 
     // TODO test /Combobox/@filterFunc
