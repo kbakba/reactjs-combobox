@@ -154,7 +154,8 @@ NS.Combobox = (function(React) {
                 _filtratedData: _filtratedData,
                 _textValue: this.props.defaultValue,
                 _selectedOptionData: null,
-                _selectedIndex: -1
+                _selectedIndex: -1,
+                additionalClassName: ''
             };
         },
 
@@ -177,7 +178,8 @@ NS.Combobox = (function(React) {
                 );
             }
             return (
-                <div className={cx(cls)} onKeyDown={this._handleKeyDown}>
+                <div className={cx(cls) + ' ' + this.state.additionalClassName}
+                    onKeyDown={this._handleKeyDown}>
                     <input
                         ref="textField"
                         type="text"
