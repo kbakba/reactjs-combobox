@@ -10,6 +10,8 @@
 
     border-collapse: separate;
 
+    z-index: 10000;
+
     -webkit-user-select: none;
        -moz-user-select: none;
         -ms-user-select: none;
@@ -166,6 +168,10 @@
 /* Open / Close */
 .Combobox .Combobox__dropdown {
     display: block;
+}
+
+.Combobox_closed {
+    z-index: 1000;
 }
 
 .Combobox_closed .Combobox__dropdown {

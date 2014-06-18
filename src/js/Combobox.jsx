@@ -84,7 +84,7 @@ NS.Combobox = (function(React) {
             onClick: React.PropTypes.func
         },
 
-        getDefaultProps: function(argument) {
+        getDefaultProps: function() {
             return {
                 selected: false,
                 children: "",
@@ -123,13 +123,18 @@ NS.Combobox = (function(React) {
                 ).isRequired,
             // Default text value
             defaultValue: React.PropTypes.string,
-            // Function that filter items in data, use value from text field
-            filterFunc: React.PropTypes.func,
             // Combobox id disabled
-            disabled: React.PropTypes.bool
+            disabled: React.PropTypes.bool,
+            // Function for filter items in data (uses value from text field)
+            filterFunc: React.PropTypes.oneOfType([
+                            React.PropTypes.func,
+                            React.PropTypes.oneOf([false])
+                        ]),
+            // Function which will be invoked when value is changed
+            onChange: React.PropTypes.func
         },
 
-        getDefaultProps: function(argument) {
+        getDefaultProps: function() {
             return {
                 data: [],
                 defaultValue: "",
@@ -137,7 +142,8 @@ NS.Combobox = (function(React) {
                 filterFunc: function(textValue, item){
                     var s = textValue.toLowerCase().replace(' ', '');
                     return item.label.toLowerCase().replace(' ', '').indexOf(s) >= 0;
-                }
+                },
+                onChange: function() {},
             };
         },
 
@@ -179,7 +185,8 @@ NS.Combobox = (function(React) {
             }
             return (
                 <div className={cx(cls) + ' ' + this.state.additionalClassName}
-                    onKeyDown={this._handleKeyDown}>
+                    onKeyDown={this._handleKeyDown}
+                    onBlur={this._blur}>
                     <input
                         ref="textField"
                         type="text"
@@ -188,7 +195,6 @@ NS.Combobox = (function(React) {
                         value={this.state._textValue}
                         onChange={this._handleTextChange}
                         onFocus={this._focus}
-                        onBlur={this._blur}
                     />
                     {dropdown}
                     <span className={clsElem('buttonWrapper')}>
@@ -201,6 +207,12 @@ NS.Combobox = (function(React) {
                     </span>
                 </div>
             );
+        },
+
+        componentDidUpdate: function(prevProps, prevState) {
+            if (prevState._textValue !== this.state._textValue) {
+                this.props.onChange(this.state._textValue, prevState._textValue);
+            }
         },
 
         // Custom component methods
@@ -314,8 +326,10 @@ NS.Combobox = (function(React) {
          * @param  {event} evt
          */
         _blur: function(evt) {
-            // HINT if this.close() fires before this._handleOptionClick() nothing happens :(
-            setTimeout(this.close, 100);
+            if (evt.relatedTarget == null || !this.getDOMNode().contains(evt.relatedTarget)) {
+                // HINT if this.close() fires before this._handleOptionClick() nothing happens :(
+                setTimeout(this.close, 100);
+            }
             return false;
         },
 
@@ -357,8 +371,12 @@ NS.Combobox = (function(React) {
                 data = this.state._data;
             }
 
-            var filterFunc = _partial(this.props.filterFunc, txt);
-            var filtratedData = data.filter(filterFunc);
+            var filtratedData = data;
+
+            if (typeof this.props.filterFunc === 'function') {
+                var filterFunc = _partial(this.props.filterFunc, txt);
+                filtratedData = data.filter(filterFunc);
+            }
 
             return filtratedData;
         },

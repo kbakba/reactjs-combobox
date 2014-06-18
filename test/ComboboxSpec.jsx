@@ -1,7 +1,7 @@
 /** @jsx React.DOM */
 /* jshint newcap: false */
 /* globals React, NS */
-/* globals describe, it, expect, beforeEach, afterEach */
+/* globals describe, it, expect, beforeEach, afterEach, spyOn */
 
 "use strict";
 
@@ -37,10 +37,10 @@ describe("Combobox",function(){
     ];
 
     beforeEach(function() {
-        var combobox_class = (
+        var combobox_def = (
                 <Combobox data={data}/>
         );
-        cbox = ReactTestUtils.renderIntoDocument(combobox_class);
+        cbox = ReactTestUtils.renderIntoDocument(combobox_def);
     });
 
 
@@ -62,26 +62,26 @@ describe("Combobox",function(){
     });
 
     it("has default value from attribute", function() {
-        var combobox_class = (
+        var combobox_def = (
                 <Combobox data={data} defaultValue="First"/>
         );
-        var cbox = ReactTestUtils.renderIntoDocument(combobox_class);
+        var cbox = ReactTestUtils.renderIntoDocument(combobox_def);
         expect(cbox.value()).toBe("First");
     });
 
     it("has filtered dropdown items on default value 'First'", function() {
-        var combobox_class = (
+        var combobox_def = (
                 <Combobox data={data} defaultValue="First"/>
         );
-        var cbox = ReactTestUtils.renderIntoDocument(combobox_class);
+        var cbox = ReactTestUtils.renderIntoDocument(combobox_def);
         expect(cbox.state._filtratedData.length).toBe(1);
     });
 
     it("has filtered dropdown items on default value '10'", function() {
-        var combobox_class = (
+        var combobox_def = (
                 <Combobox data={data} defaultValue="10"/>
         );
-        var cbox = ReactTestUtils.renderIntoDocument(combobox_class);
+        var cbox = ReactTestUtils.renderIntoDocument(combobox_def);
         expect(cbox.state._filtratedData.length).toBe(2);
     });
 
@@ -204,7 +204,7 @@ describe("Combobox",function(){
         expect(cbox.isClosed()).toBe(false);
     });
 
-    it("accept new data items", function() {
+    it("can accept new data items", function() {
         var textField = cbox.refs.textField.getDOMNode();
         cbox.setData(newData);
         Simulate.focus(textField);
@@ -212,6 +212,54 @@ describe("Combobox",function(){
         expect(allOptions.length).toBe(newData.length);
     });
 
-    // TODO test /Combobox/@filterFunc
+    it("can accept custom filterFunc", function() {
+        var my = {
+            filterFunc: function(textValue, item) {
+                return true;
+            },
+        };
+        spyOn(my, 'filterFunc');
+
+        var combobox_def = (
+                <Combobox data={data} filterFunc={my.filterFunc}/>
+        );
+
+        var cbox = ReactTestUtils.renderIntoDocument(combobox_def);
+        cbox.setTextValue('10');
+
+        for (var i = data.length - 1; i >= 0; i--) {
+            expect(my.filterFunc).toHaveBeenCalledWith('10', data[i], i, data);
+        }
+    });
+
+    it("can accept filterFunc as 'false', and don't filter data", function() {
+        var combobox_def = (
+                <Combobox data={data} filterFunc={false}/>
+        );
+
+        var cbox = ReactTestUtils.renderIntoDocument(combobox_def);
+        cbox.setTextValue('10');
+
+        var allOptions = getAllOptions(cbox);
+        expect(allOptions.length).toBe(data.length);
+    });
+
+    it("must fire onChange() when value changes", function() {
+        var my = {
+            onChange: function(newValue, oldValue) {
+                return true;
+            },
+        };
+        spyOn(my, 'onChange');
+
+        var combobox_def = (
+                <Combobox data={data} defaultValue="First" onChange={my.onChange}/>
+        );
+
+        var cbox = ReactTestUtils.renderIntoDocument(combobox_def);
+        cbox.setTextValue('10');
+
+        expect(my.onChange).toHaveBeenCalledWith('10', 'First');
+    });
 
 });
