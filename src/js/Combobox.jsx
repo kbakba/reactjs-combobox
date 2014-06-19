@@ -217,6 +217,8 @@ NS.Combobox = (function(React) {
 
         // Custom component methods
         // Private
+        _timerId: null,
+
         /**
          * Convert dataItem to <Option/>
          * @param  {object} dataItem
@@ -313,6 +315,9 @@ NS.Combobox = (function(React) {
          * @param  {event} evt
          */
         _focus: function(evt) {
+            clearTimeout(this._timerId);
+            delete this._timerId;
+
             var textField = evt.target;
             var newValue = textField.value;
             var len = newValue.length;
@@ -328,7 +333,7 @@ NS.Combobox = (function(React) {
         _blur: function(evt) {
             if (evt.relatedTarget == null || !this.getDOMNode().contains(evt.relatedTarget)) {
                 // HINT if this.close() fires before this._handleOptionClick() nothing happens :(
-                setTimeout(this.close, 100);
+                this._timerId = setTimeout(this.close, 50);
             }
             return false;
         },
