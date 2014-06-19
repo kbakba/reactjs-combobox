@@ -25,7 +25,8 @@
     "tests"
   ],
   "dependencies": {
-    "react": "0.10"
+    "react": "0.10",
+    "jquery": "~2.1.1"
   }
 
 }

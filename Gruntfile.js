@@ -71,24 +71,23 @@ module.exports = function(grunt) {
                 frameworks: ['jasmine'],
                 basePath: '../.dev',
                 files: [
+                        'bower_components/jquery/dist/jquery.js',
                         'bower_components/react/react-with-addons.js',
-                        'js/Combobox.js',
-                        'test/*Spec.js'
+                        'js/Combobox*.js',
+                        'test/Combobox*Spec.js'
                 ],
                 browsers: [],
             },
             run: {
                 reporters: ['progress'],
+                browsers: ['Chrome'],
                 background: false,
                 autoWatch: false,
-                browsers: ['Chrome'],
                 singleRun: true
             },
             dev: {
                 reporters: ['progress'],
-                browsers: ['Chrome'],
-                // autoWatch: true,
-                // singleRun: false,
+                browsers: [],
                 background: true
             },
         },
@@ -165,6 +164,10 @@ module.exports = function(grunt) {
 
     require('load-grunt-tasks')(grunt);
 
+    grunt.registerTask('echo-karma-url', function() {
+        grunt.log.writeln('Karma started on http://localhost:9876');
+    });
+
     grunt.registerTask('dev', [
         'bower-install-simple',
         'clean:dev',
@@ -177,6 +180,7 @@ module.exports = function(grunt) {
         'dev',
         'connect',
         'karma:dev',
+        'echo-karma-url',
         'watch'
     ]);
 

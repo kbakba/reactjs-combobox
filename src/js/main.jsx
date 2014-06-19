@@ -2,8 +2,9 @@
 /* jshint newcap: false */
 /* global React, NS */
 
-(function(doc) {
+(function(doc, win) {
     var Combobox = NS.Combobox;
+    var ComboboxRemote = NS.ComboboxRemote;
 
     var data = [
         { label: "Point",    value: "0" },
@@ -25,9 +26,18 @@
         { label: "Star3",   value: "5" }
     ];
 
-    window.comboboxInstance = React.renderComponent(
-        (<Combobox data={data} defaultValue="Point"/>),
-        doc.getElementById('insert_here')
+    var log = function() {
+        console.log.apply(console, arguments);
+    };
+
+    win.comboboxInstance = React.renderComponent(
+        (<Combobox data={data} defaultValue="Point" onChange={log}/>),
+        doc.getElementById('insert_here_combobox')
     );
 
-})(document);
+    win.comboboxRemoteInstance = React.renderComponent(
+        (<ComboboxRemote url="remoteData.json?text={}" defaultValue="Remote" onChange={log}/>),
+        doc.getElementById('insert_here_combobox_remote')
+    );
+
+})(document, window);
