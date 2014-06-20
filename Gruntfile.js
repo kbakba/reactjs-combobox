@@ -25,6 +25,12 @@ module.exports = function(grunt) {
                     test: '.dev/test/**/*.js'
                 }
             },
+            dist: {
+                files: {
+                    jsx: 'dist/js/**/*.js',
+                    test: 'dist/test/**/*.js'
+                }
+            },
             options: {
                 jshintrc: '.jshintrc'
             }
@@ -59,7 +65,7 @@ module.exports = function(grunt) {
                     expand: true,
                     cwd: 'src/',
                     src: ['js/**/*.jsx'],
-                    dest: 'dest/',
+                    dest: 'dist/',
                     ext: '.js'
                 }]
             }
@@ -105,7 +111,7 @@ module.exports = function(grunt) {
                 files: [{
                     expand: true,
                     cwd: 'src/',
-                    src: ['bower_components/**', '*.*', 'css/**/*.css', 'js/**/*.js'],
+                    src: ['bower_components/**', '*.*', 'css/**/*.css', 'js/**/*.js', 'js/**/*.jsx'],
                     dest: 'dist/'
                 }]
             }
@@ -189,8 +195,8 @@ module.exports = function(grunt) {
     grunt.registerTask('dist', [
         'bower-install-simple',
         'clean:dist',
-        'jshint',
         'react:dist',
+        'jshint',
         'copy:root'
     ]);
 
