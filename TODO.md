@@ -5,6 +5,7 @@ TODO:
   * Use [browserify](http://browserify.org/) as module system
   * Fix error in tests on IE9
   * Fix error with starts karma-phantomjs-launcher and jasmine
+  * Support mobile browsers 
 
 ### Combobox
   * Implement support custom <ComboboxOption/>

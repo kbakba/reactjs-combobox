@@ -96,6 +96,11 @@ function(xhr, status, err) {
 ### Component methods
 All [methods from Combobox](#component-methods)
 
+
+## Browser support
+Tested in IE9+, Chrome33+, Firefox29+, Safari7+
+**Not tested in mobile browsers**
+
 ## TODO
 see [TODO.md](TODO.md)
 
