@@ -182,7 +182,6 @@ describe("Combobox",function(){
 
     it("must change value on .setTextValue()", function() {
         cbox.setTextValue("10");
-        expect(cbox.isClosed()).toBe(false);
         expect(cbox.value()).toBe("10");
     });
 
@@ -191,17 +190,17 @@ describe("Combobox",function(){
         expect(cbox.isClosed()).toBe(true);
     });
 
-    it("dropdown must be closed if Combobox disabled", function() {
+    it("disabled dropdown must be closed if Combobox disabled", function() {
         cbox.disable();
         expect(cbox.getDOMNode().className.split(/\s+/)).toContain('Combobox_disabled');
         expect(cbox.isDisabled()).toBe(true);
         expect(cbox.isClosed()).toBe(true);
     });
 
-    it("dropdown must be closed if text changed", function() {
+    it("disabled dropdown must be closed if text changed", function() {
         cbox.disable();
         cbox.setTextValue("1");
-        expect(cbox.isClosed()).toBe(false);
+        expect(cbox.isClosed()).toBe(true);
     });
 
     it("can accept new data items", function() {

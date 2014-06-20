@@ -194,8 +194,7 @@ NS.Combobox = (function(React) {
                         className={clsElem('input')}
                         value={this.state._textValue}
                         onChange={this._handleTextChange}
-                        onFocus={this._focus}
-                    />
+                        onFocus={this._focus}/>
                     {dropdown}
                     <span className={clsElem('buttonWrapper')}>
                         <button
@@ -253,7 +252,7 @@ NS.Combobox = (function(React) {
                 _selectedIndex: -1,
                 _selectedOptionData: null
             });
-            this.setTextValue(newValue);
+            this.setTextValue(newValue, true);
             return false;
         },
 
@@ -267,7 +266,6 @@ NS.Combobox = (function(React) {
         _handleOptionClick: function(evt, label, dataItem) {
             this.setState({_selectedOptionData: dataItem});
             this.setTextValue(label);
-            this.close();
             return false;
         },
 
@@ -322,7 +320,7 @@ NS.Combobox = (function(React) {
             var newValue = textField.value;
             var len = newValue.length;
             textField.setSelectionRange(len, len);
-            this.setTextValue(newValue);
+            this.setTextValue(newValue, true);
             return false;
         },
 
@@ -333,7 +331,7 @@ NS.Combobox = (function(React) {
         _blur: function(evt) {
             if (evt.relatedTarget == null || !this.getDOMNode().contains(evt.relatedTarget)) {
                 // HINT if this.close() fires before this._handleOptionClick() nothing happens :(
-                this._timerId = setTimeout(this.close, 50);
+                this._timerId = setTimeout(this.close, 100);
             }
             return false;
         },
@@ -445,14 +443,16 @@ NS.Combobox = (function(React) {
         /**
          * Set Combobox text value
          * @param {string} newValue
+         * @param {bool} open if passable
          */
-        setTextValue: function(newValue) {
+        setTextValue: function(newValue, open) {
+            open = open || false;
             var newData = this._getFiltratedData(newValue);
 
             this.setState({
                 _textValue: newValue,
                 _filtratedData: newData,
-                isOpen: newData.length > 0
+                isOpen: open && (newData.length > 0)
             });
         },
 

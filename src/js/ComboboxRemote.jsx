@@ -33,6 +33,7 @@ NS.ComboboxRemote = (function(Combobox, React, jQuery) {
 
             return {
                 filterFunc: false,
+                defaultValue: "",
                 // Function for build url from props.url and combobox.value
                 urlBuilder: function(url, val) {
                     return url.replace('{}', val);
@@ -54,9 +55,22 @@ NS.ComboboxRemote = (function(Combobox, React, jQuery) {
             );
         },
 
+        componentDidMount: function() {
+            if (!this.isDisabled()) {
+                var url = this.props.urlBuilder(this.props.url, this.props.defaultValue);
+                if (url) {
+                    this.props.ajaxFunc({
+                        url: url,
+                        success: this.props.onSuccess.bind(this),
+                        error: this.props.onError.bind(this)
+                    });
+                }
+            }
+        },
+
         /**
          * Handle <Combobox/> change
-         * @param  {string} val value x
+         * @param  {string} val
          */
         _handleOnChange: function(val) {
             var url = this.props.urlBuilder(this.props.url, val);
@@ -77,7 +91,6 @@ NS.ComboboxRemote = (function(Combobox, React, jQuery) {
          */
         _onSuccessDefault: function(newData) {
             this.refs.combobox.setData(newData);
-            this.refs.combobox.open();
         }
     };
 
