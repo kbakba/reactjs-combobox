@@ -8,13 +8,29 @@
         <link rel="stylesheet" type="text/css" href="css/Combobox.css">
     </head>
     <body>
-        <div id="insert_here_combobox"></div>
-        <div id="insert_here_combobox_remote"></div>
+        <div id="insert_here"></div>
 
         <script src="bower_components/react/react-with-addons.js" type="text/javascript" charset="utf-8"></script>
         <script src="bower_components/jquery/dist/jquery.js" type="text/javascript" charset="utf-8"></script>
         <script src="js/Combobox.js" type="text/javascript" charset="utf-8"></script>
         <script src="js/ComboboxRemote.js" type="text/javascript" charset="utf-8"></script>
-        <script src="js/main.js" type="text/javascript" charset="utf-8"></script>
+        <script type="text/javascript" charset="utf-8">
+            var comboboxInstance;
+            var log = function(newValue, oldValue) {
+                console.log(comboboxInstance.value());
+            };
+
+            comboboxInstance = React.renderComponent(
+                NS.ComboboxRemote({
+                    url: "remoteData.json",
+                    defaultValue: "None",
+                    onChange: log,
+                    urlBuilder: function(url, val) {
+                        return url + '?text=' + encodeURIComponent(val);
+                    }
+                }),
+                document.getElementById('insert_here')
+            );
+        </script>
     </body>
 </html>
