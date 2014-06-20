@@ -68,7 +68,7 @@ module.exports = function(grunt) {
         karma: {
             options: {
                 configFile: 'test/karma.conf.js',
-                frameworks: ['jasmine'],
+                frameworks: ['jasmine-ajax', 'jasmine'],
                 basePath: '../.dev',
                 files: [
                         'bower_components/jquery/dist/jquery.js',
