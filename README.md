@@ -12,6 +12,7 @@ var combobox = React.renderComponent(
     document.getElementById('here')
 );
 ```
+### [Examples](http://kbakba.github.io/reactjs-combobox/examples.html)
 
 ### Component properties
 
