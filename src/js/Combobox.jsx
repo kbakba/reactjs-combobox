@@ -214,6 +214,10 @@ NS.Combobox = (function(React) {
             }
         },
 
+        componentWillReceiveProps: function(nextProps) {
+            this.setData(nextProps.data);
+        },
+
         // Custom component methods
         // Private
         _timerId: null,
